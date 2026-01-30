@@ -110,8 +110,12 @@
         const ctx = canvas.getContext('2d');
 
         function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         window.addEventListener('resize', resize);
         resize();
@@ -157,7 +161,15 @@
             fireworks.push(new Firework(x, y));
         }
 
-        setInterval(randomFirework, 1200);
+        // 자동 폭죽 시작
+        setInterval(() => {
+            randomFirework();
+        }, 1000);
+
+        // 페이지 로드 직후 첫 폭죽
+        setTimeout(() => {
+            for (let i = 0; i < 3; i++) randomFirework();
+        }, 500);
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
