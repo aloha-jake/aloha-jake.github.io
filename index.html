@@ -120,8 +120,9 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
+                this.hue = Math.floor(Math.random() * 360);
                 this.particles = [];
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 60; i++) {
                     this.particles.push({
                         x: x,
                         y: y,
@@ -135,13 +136,13 @@
                 this.particles.forEach(p => {
                     p.x += Math.cos(p.angle) * p.speed;
                     p.y += Math.sin(p.angle) * p.speed;
-                    p.alpha -= 0.02;
+                    p.alpha -= 0.015;
                 });
             }
             draw() {
                 this.particles.forEach(p => {
                     if (p.alpha > 0) {
-                        ctx.fillStyle = `rgba(96,165,250,${p.alpha})`;
+                        ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${p.alpha})`;
                         ctx.fillRect(p.x, p.y, 2, 2);
                     }
                 });
@@ -149,6 +150,14 @@
         }
 
         let fireworks = [];
+
+        function randomFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height * 0.6;
+            fireworks.push(new Firework(x, y));
+        }
+
+        setInterval(randomFirework, 1200);
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -163,8 +172,7 @@
         }
         animate();
 
-        document.addEventListener('click', e => {
-            const rect = canvas.getBoundingClientRect();
+        // 클릭 이벤트는 제거하고 자동 폭죽만 사용
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             fireworks.push(new Firework(x, y));
